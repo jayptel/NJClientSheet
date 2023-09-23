@@ -1,0 +1,24 @@
+function doPost(e) {
+  var result = { message: 'hello' };
+
+  try {
+    var jsonString = e.postData.contents;
+    var data = JSON.parse(jsonString);
+
+    if (data.action === 'addItem') {
+      // Get the Google Sheet by its ID (replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID)
+      var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName('Items');
+
+      // Append the data to the sheet
+      sheet.appendRow([data.name, data.description, data.age]);
+
+      result.message = 'Success';
+    } else {
+      result.message = 'Invalid action';
+    }
+  } catch (error) {
+    result.message = 'Error: ' + error.toString();
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
