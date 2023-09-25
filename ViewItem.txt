@@ -1,0 +1,25 @@
+function doGet() {
+  try {
+    // Get the Google Sheet by its ID (replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID)
+    var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName('Items');
+    
+    // Get all data from the sheet
+    var data = sheet.getDataRange().getValues();
+    var jsonData = [];
+    
+    // Convert the data to JSON format
+    for (var i = 1; i < data.length; i++) { // Skip the header row
+      var row = data[i];
+      var item = {
+        name: row[0],
+        description: row[1],
+        age: row[2]
+      };
+      jsonData.push(item);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ data: jsonData })).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
