@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         // Your implementation for sending data to Google Sheets
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         // Replace with your Google Sheets API endpoint URL
-        String apiUrl = "https://script.google.com/macros/s/AKfycbyLiHAb1XdRI1FSOyGTNROOo6oAnenNHc18XRF7IfzOs7TSWMYIE8G4GgRaN8wEkuna/exec";
+        String apiUrl = "/exec";
 
         // Create a Volley request to send data to the API
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
