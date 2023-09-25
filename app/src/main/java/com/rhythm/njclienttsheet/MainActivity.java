@@ -141,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
         }*/
 
         // Retrieve data from Google Sheets using an HTTP request
-        //String url = "https://script.google.com/macros/s/AKfycbyLiHAb1XdRI1FSOyGTNROOo6oAnenNHc18XRF7IfzOs7TSWMYIE8G4GgRaN8wEkuna/exec?action=getData";
-        String url = "https://script.google.com/macros/s/AKfycbyPx6b7h9XMur9krNwYmqqucKqziMHj0rRS7hXU1HLZZZc8Lj1m4qBIiPHHIu9sjDOBBg/exec";
+        //String url = "/exec?action=getData";
+        String url = "/exec";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
