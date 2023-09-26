@@ -50,10 +50,11 @@ public class ItemListFragment extends Fragment {
     public void updateItemList(List<Item> itemList) {
         // Update the UI with the new itemList
         this.itemList = itemList;
-
+        adapter.notifyDataSetChanged();
         if (adapter != null) {
             adapter.setItemList(itemList);
         }
+        Log.d("ItemListFragment", "updateItemList: Updated itemList = " + itemList.toString());
         // Assuming you have a RecyclerView and its adapter set up in your fragment
        /* if (recyclerView != null && adapter != null) {
             Log.d("ItemListFragment", "updateItemList: " + itemList.toString());

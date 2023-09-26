@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -19,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.rhythm.njclienttsheet.adapters.ItemAdapter;
 import com.rhythm.njclienttsheet.models.Item;
 
 import org.json.JSONArray;
@@ -39,14 +41,18 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAddItemVisible = false; // To track the visibility of the Add Item fragment
     private boolean isViewItemVisible = false;
     private List<Item> itemList = new ArrayList<>();
+    private static final int REQUEST_EDIT_ITEM = 1;
+    private ItemAdapter itemAdapter; // Declare itemAdapter as a class-level variable
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        requestQueue = Volley.newRequestQueue(this);
+        Log.d("hello wolrd", "mainactive lunch next loaddataanddisplay");
 
+        showViewItemListFragment();
         // Initialize UI elements
         buttonAdd = findViewById(R.id.buttonAdd);
-
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 if (isAddItemVisible) {
                     // Remove the Add Item fragment
                     removeAddItemFragment();
+                    //Show View Data  showViewItemListFragment();
+                    showViewItemListFragment();
                     Log.d("hello wolrd", "checking add view and hide");
                 } else {
                     // Show the Add Item fragment
@@ -67,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        requestQueue = Volley.newRequestQueue(this);
+
         // TODO: Implement OnClickListener for other buttons (Update, View, Delete).
         // TODO:Implement OnClickListener for View buttons
         // Insert the OnClickListener for the "View" button here
@@ -153,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
                         // Parse the JSON response and update the itemListFragment
                         // Here, you'll need to implement code to populate your itemListFragment with the data.
                         // You can parse the JSON response and create Item objects from it.
-
+                        // Clear the itemList to remove old data
+                        itemList.clear();
                         // Example parsing:
                         try {
                             JSONArray jsonArray = response.getJSONArray("data");
@@ -173,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                             // Update the itemListFragment with the data
                             if (itemListFragment != null) {
                                 ((ItemListFragment) itemListFragment).updateItemList(itemList);
+                                Log.d("MainActivity", "updateItemList called in showViewItemListFragment");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -212,10 +222,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Commit the transaction
             fragmentTransaction.commit();
-            Log.d("hello wolrd", "remove  view Item");
+            Log.d("MainActivity", "removeViewItemListFragment");
         }
     }
     //TODO: Above For VIew Item Fragment SHow And Hide when Click Buttton View
+
 
     // Define the sendDataToGoogleSheets method here, similar to how it's done in AddItemActivity
     // TODO: SendDataToGoogleSheets method here, similar to how it's done in AddItemActivity Send Data to Google Sheet
@@ -304,5 +315,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("MainActivity", "onActivityResult: requestCode = " + requestCode + ", resultCode = " + resultCode);
+        if (requestCode == REQUEST_EDIT_ITEM && resultCode == RESULT_OK) {
+            Item updatedItem = (Item) data.getSerializableExtra("updatedItem");
+
+            // Find the position of the updated item in the list
+            int position = findItemPositionById(updatedItem.getName());
+
+            if (position != -1) {
+                // Replace the old item with the updated item
+                itemList.set(position, updatedItem);
+
+                // Notify the adapter of the change at the specific position
+                itemAdapter.notifyItemChanged(position);
+
+                // Notify the ItemListFragment with the updated data
+                if (itemListFragment != null) {
+                    itemListFragment.updateItemList(itemList);
+                    Log.d("MainActivity", "updateItemList called in onActivityResult");
+                }
+            }
+        }
+    }
+    private int findItemPositionById(String itemId) {
+        for (int i = 0; i < itemList.size(); i++) {
+            Item item = itemList.get(i);
+            if (item.getName().equals(itemId)) {
+                return i;
+            }
+        }
+        return -1; // Item not found in the list
+    }
 
 }

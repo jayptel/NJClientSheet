@@ -25,6 +25,9 @@
         <activity android:name=".AddItemActivity"  android:exported="false">
             <!-- ... -->
         </activity>
+        <activity android:name=".EditItemActivity"  android:exported="false">
+            <!-- ... -->
+        </activity>
     </application>
 
 </manifest>

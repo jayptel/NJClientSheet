@@ -1,5 +1,6 @@
 package com.rhythm.njclienttsheet.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import java.util.List;
 import com.rhythm.njclienttsheet.models.Item;
 import com.rhythm.njclienttsheet.R; // Replace with your actual resource import
 import android.widget.TextView;
+import com.rhythm.njclienttsheet.EditItemActivity;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
     private List<Item> itemList;
 
@@ -48,6 +50,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         holder.nameTextView.setText(item.getName());
         holder.descriptionTextView.setText(item.getDescription());
         holder.ageTextView.setText(item.getAge());
+
+
+        // Set an OnClickListener for the "Edit" button
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the "Edit" button click here
+                // You can navigate to the EditItemFragment or a new activity and pass the item data.
+                // For example, start an EditItemActivity and pass the item's data.
+                // Create an Intent to start the EditItemActivity
+                Intent intent = new Intent(v.getContext(), EditItemActivity.class);
+                // Pass the selected item's data to the EditItemActivity
+                intent.putExtra("selectedItem", item);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     // Return the number of items in your data source
@@ -71,12 +89,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         public TextView nameTextView;
         public TextView descriptionTextView;
         public TextView ageTextView;
+        public View editButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.nameTextView); // Replace with your actual view IDs
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             ageTextView = itemView.findViewById(R.id.ageTextView);
+            editButton = itemView.findViewById(R.id.buttonEdit);
         }
     }
 }

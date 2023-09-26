@@ -1,34 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <LinearLayout
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/nameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name: John Doe"
-            android:textSize="18sp"
-            android:textColor="#d1d1d1" />
 
-        <TextView
-            android:id="@+id/descriptionTextView"
+    <TextView
+        android:id="@+id/nameTextlable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name:"
+        android:textSize="18sp"
+        android:textColor="#B06ED8"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/nameTextlable"
+        android:text="John Doe"
+        android:textColor="#d1d1d1"
+        android:textSize="18sp"/>
+
+    <TextView
+            android:id="@+id/descriptionTextlable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description: Lorem ipsum..."
+            android:text="Description:"
             android:textSize="14sp"
-            android:textColor="#d1d1d1" />
+            android:textColor="#B06ED8"
+            android:layout_below="@id/nameTextView"
+            android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/ageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Age: 30"
-            android:textSize="16sp"
-            android:textColor="#d1d1d1" />
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description: Lorem ipsum..."
+        android:textSize="14sp"
+        android:textColor="#d1d1d1"
+        android:layout_below="@id/nameTextView"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/descriptionTextlable"/>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/ageTextlable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age:"
+        android:textSize="16sp"
+        android:textColor="#B06ED8"
+        android:layout_below="@id/descriptionTextlable"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/ageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age: 30"
+        android:textSize="16sp"
+        android:textColor="#d1d1d1"
+        android:layout_below="@id/descriptionTextlable"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/ageTextlable"/>/>
+    <Button
+        android:id="@+id/buttonEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/descriptionTextView"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#d1d1d1"
+        android:padding="150dp"
+        android:layout_below="@id/ageTextlable"
+        android:layout_marginTop="20dp"/>
+
+</RelativeLayout>

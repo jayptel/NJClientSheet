@@ -1,12 +1,14 @@
 package com.rhythm.njclienttsheet.models;
-
-public class Item {
+import java.io.Serializable;
+public class Item implements Serializable{
 
         private String name;
         private String description;
         private String age;
         // Constructor, setters, and other methods...
-
+        private int nameColorRes;
+        private int descriptionColorRes;
+        private int ageColorRes;
         public String getName() {
                 return name;
         }
@@ -18,9 +20,29 @@ public class Item {
         public String getAge() {
                 return age;
         }
+        public int getNameColorRes() {
+                return nameColorRes;
+        }
+
+        public int getDescriptionColorRes() {
+                return descriptionColorRes;
+        }
+
+        public int getAgeColorRes() {
+                return ageColorRes;
+        }
         public Item(String name, String description, String age) {
                 this.name = name;
                 this.description = description;
                 this.age = age;
+        }
+
+        public void setName(String editedName) {
+        }
+
+        public void setDescription(String editedDescription) {
+        }
+
+        public void setAge(String editedAge) {
         }
 }
