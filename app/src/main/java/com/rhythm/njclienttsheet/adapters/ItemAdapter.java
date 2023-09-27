@@ -1,6 +1,7 @@
 package com.rhythm.njclienttsheet.adapters;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.rhythm.njclienttsheet.models.Item;
 import com.rhythm.njclienttsheet.R; // Replace with your actual resource import
+
+
 import android.widget.TextView;
 import com.rhythm.njclienttsheet.EditItemActivity;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
@@ -50,8 +54,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         holder.nameTextView.setText(item.getName());
         holder.descriptionTextView.setText(item.getDescription());
         holder.ageTextView.setText(item.getAge());
+// Update the checkbox state based on the isSelected field
+        holder.checkBox.setChecked(item.isSelected());
+      // Add an OnClickListener to the checkbox
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                item.setSelected(holder.checkBox.isChecked()); // Update the selected state
 
-
+                Log.d("ItemAdapter", "Checkbox clicked for item: " + item.getName() + ", isChecked: " + holder.checkBox.isChecked());
+            }
+        });
         // Set an OnClickListener for the "Edit" button
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +80,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             }
         });
     }
-
+    // Implement a method to get selected items for deletion
+    public List<Item> getSelectedItems() {
+        List<Item> selectedItems = new ArrayList<>();
+        for (Item item : itemList) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
+    }
     // Return the number of items in your data source
     @Override
     public int getItemCount() {
@@ -90,6 +112,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         public TextView descriptionTextView;
         public TextView ageTextView;
         public View editButton;
+        public MaterialCheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,6 +120,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             ageTextView = itemView.findViewById(R.id.ageTextView);
             editButton = itemView.findViewById(R.id.buttonEdit);
+            checkBox=itemView.findViewById(R.id.checkBox);
         }
     }
 }

@@ -13,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.rhythm.njclienttsheet.adapters.ItemAdapter;
 import com.rhythm.njclienttsheet.models.Item;
@@ -28,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -43,13 +46,18 @@ public class MainActivity extends AppCompatActivity {
     private List<Item> itemList = new ArrayList<>();
     private static final int REQUEST_EDIT_ITEM = 1;
     private ItemAdapter itemAdapter; // Declare itemAdapter as a class-level variable
+    private Button buttonDelete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
         Log.d("hello wolrd", "mainactive lunch next loaddataanddisplay");
-
+// Initialize the itemAdapter and set it to the RecyclerView
+        itemAdapter = new ItemAdapter(itemList); // itemList should be initialized here
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setAdapter(itemAdapter);
         showViewItemListFragment();
         // Initialize UI elements
         buttonAdd = findViewById(R.id.buttonAdd);
@@ -97,7 +105,81 @@ public class MainActivity extends AppCompatActivity {
                 isViewItemVisible = !isViewItemVisible;
             }
         });
+
+        buttonDelete = findViewById(R.id.buttonDelete);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Delete selected items from the Google Sheet here
+                Log.d("MainActivity", "Delete button clicked");
+
+                // Call getSelectedItems to retrieve the selected items
+                List<Item> selectedItems = itemAdapter.getSelectedItems();
+
+                // Check if there are any selected items
+                if (!selectedItems.isEmpty()) {
+                    // Remove selected items from the itemList
+                    itemList.removeAll(selectedItems);
+
+                    // Update the adapter
+                    itemAdapter.notifyDataSetChanged();
+
+                    // Perform deletion in Google Sheets for the selected items
+                    for (Item itemToDelete : selectedItems) {
+                        Log.d("MainActivity", "Deleting item: " + itemToDelete.getName());
+                        deleteItemFromSheet(itemToDelete.getName()); // Pass the item's name or identifier
+                    }
+
+                    // Clear the list of selected items after deletion
+                    selectedItems.clear();
+                } else {
+                    // No items selected, show a message or handle as needed
+                    Toast.makeText(MainActivity.this, "No items selected for deletion", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
+
+    private void deleteItemFromSheet(String itemName) {
+        // Create a request URL with the item name to delete
+        String url = "https://script.google.com/macros/s/AKfycbzejRLzXfkpJPgs1hF6vAsLqo31CrVz2vq-J-bhDask-0YSNuQ3HGlw-ScE9JRH1yj-Fg/exec?itemName=" + itemName; // Replace with your web app URL
+
+        // Log the URL before making the request
+        Log.d("MainActivity", "Delete request URL: " + url);
+
+
+        // Send a GET request to your Google Apps Script web app to delete the item
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the response, e.g., show a success message
+                        Log.d("MainActivity", "Delete response: " + response);
+                        // Handle the response, e.g., show a success message
+                        if ("Success".equals(response)) {
+                            // Handle success, e.g., show a success message to the user
+                            Toast.makeText(MainActivity.this, "Item deleted successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle other cases, e.g., show an error message
+                            Toast.makeText(MainActivity.this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors, including network errors and response errors
+                        Toast.makeText(MainActivity.this, "Error sending delete request", Toast.LENGTH_SHORT).show();
+                        Log.e("MainActivity", "Error sending delete request", error);
+                    }
+                });
+
+        // Add the request to the Volley request queue
+        requestQueue.add(stringRequest);
+    }
+
     // TODO: Below  For Add item Fragmment Show and Hide layout mehtod
     private void showAddItemFragment() {
        // FragmentManager fragmentManager = getSupportFragmentManager();

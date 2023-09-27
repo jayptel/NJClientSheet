@@ -45,4 +45,14 @@ public class Item implements Serializable{
 
         public void setAge(String editedAge) {
         }
+
+        private boolean isSelected; // Add this field
+
+        public boolean isSelected() {
+                return isSelected;
+        }
+
+        public void setSelected(boolean selected) {
+                isSelected = selected;
+        }
 }
