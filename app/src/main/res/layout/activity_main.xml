@@ -5,36 +5,36 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Add Button -->
+    <!-- Add Button  marginEnd has to -8dp to be not cut btn -->
     <Button
         android:id="@+id/buttonAdd"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buttonUpdate"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="-5dp" />
 
     <!-- Update Button -->
     <Button
         android:id="@+id/buttonUpdate"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update"
+        android:text="Refresh"
         app:layout_constraintStart_toEndOf="@+id/buttonAdd"
         app:layout_constraintEnd_toStartOf="@+id/buttonView"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="-5dp" />
 
     <!-- View Button -->
     <Button
         android:id="@+id/buttonView"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View"
         app:layout_constraintStart_toEndOf="@+id/buttonUpdate"
@@ -42,12 +42,12 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="-5dp" />
 
-    <!-- Delete Button -->
+    <!-- Delete Button not to change marginend it has to be 16dp-->
     <Button
         android:id="@+id/buttonDelete"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delete"
         app:layout_constraintStart_toEndOf="@+id/buttonView"
@@ -72,19 +72,18 @@
     <!-- RecyclerView with id "recyclerView" -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="410dp"
+        android:layout_height="697dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:clipToPadding="false"
+        android:paddingLeft="16dp"
         android:paddingTop="16dp"
         android:paddingRight="16dp"
-        android:paddingLeft="16dp"
         android:paddingBottom="100dp"
-        android:clipToPadding="false"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAdd"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonAdd" />
 </androidx.constraintlayout.widget.ConstraintLayout>

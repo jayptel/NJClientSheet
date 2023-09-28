@@ -1,0 +1,27 @@
+function doPost(e) {
+
+  // Parse request body
+  var json = JSON.parse(e.postData.contents);
+  
+  // Get sheet
+  var sheet = SpreadsheetApp.openById("1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4").getSheetByName("Items");
+
+  // Find row to update
+  var row = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1)
+                .createTextFinder(json.name)
+                .findNext();
+// Log the result of findNext() (for debugging)
+  Logger.log("Row found: " + row);
+
+  // Update row 
+  if (row) {
+    sheet.getRange(row.getRow(), 1).setValue(json.name);
+    sheet.getRange(row.getRow(), 2).setValue(json.description);
+    sheet.getRange(row.getRow(), 3).setValue(json.age); 
+    
+  }
+
+  // Return response
+  return ContentService.createTextOutput("Success"); 
+
+}

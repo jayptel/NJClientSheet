@@ -1,0 +1,23 @@
+function doGet(e) {
+  // Handle GET request for item deletion
+  var itemToDelete = e.parameter.itemName;
+
+  if (itemToDelete) {
+    // Assuming you have a Google Sheet named "Items" with columns "Name," "Description," "Age," and "Timestamp"
+    var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName("Items");
+    var data = sheet.getDataRange().getValues();
+
+    for (var i = data.length - 1; i >= 0; i--) {
+      var itemName = data[i][0]; // Assuming the name is in the first column
+      if (itemName === itemToDelete) {
+        sheet.deleteRow(i + 1); // Delete the row (adding 1 because arrays are 0-indexed)
+      }
+    }
+
+    // Respond with a success message
+    return ContentService.createTextOutput("{'message': 'Success'}").setMimeType(ContentService.MimeType.JSON);
+  } else {
+    // Respond with an error message
+    return ContentService.createTextOutput("{'message': 'Error: Missing item name parameter'}").setMimeType(ContentService.MimeType.JSON);
+  }
+}

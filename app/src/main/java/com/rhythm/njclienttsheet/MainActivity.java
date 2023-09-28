@@ -85,6 +85,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // TODO: Implement OnClickListener for other buttons (Update, View, Delete).
+
+        Button buttonUpdate = findViewById(R.id.buttonUpdate);
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call the method to refresh the list
+                showViewItemListFragment();
+            }
+        });
+
         // TODO:Implement OnClickListener for View buttons
         // Insert the OnClickListener for the "View" button here
         Button buttonView = findViewById(R.id.buttonView);
@@ -159,11 +169,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("MainActivity", "Delete response: " + response);
                         // Handle the response, e.g., show a success message
                         if ("Success".equals(response)) {
-                            // Handle success, e.g., show a success message to the user
-                            Toast.makeText(MainActivity.this, "Item deleted successfully", Toast.LENGTH_SHORT).show();
-                        } else {
+
                             // Handle other cases, e.g., show an error message
                             Toast.makeText(MainActivity.this, "Failed to delete item", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle success, e.g., show a success message to the user
+                            Toast.makeText(MainActivity.this, "Item deleted successfully", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -266,6 +277,8 @@ public class MainActivity extends AppCompatActivity {
                                 ((ItemListFragment) itemListFragment).updateItemList(itemList);
                                 Log.d("MainActivity", "updateItemList called in showViewItemListFragment");
                             }
+                            // Show a toast message for successful data retrieval
+                            Toast.makeText(MainActivity.this, "Data retrieved successfully", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             // Log error in JSON parsing
