@@ -8,16 +8,17 @@ function doPost(e) {
 
   // Find row to update
   var row = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1)
-                .createTextFinder(json.name)
+                .createTextFinder(json.id)
                 .findNext();
 // Log the result of findNext() (for debugging)
   Logger.log("Row found: " + row);
 
   // Update row 
   if (row) {
-    sheet.getRange(row.getRow(), 1).setValue(json.name);
-    sheet.getRange(row.getRow(), 2).setValue(json.description);
-    sheet.getRange(row.getRow(), 3).setValue(json.age); 
+    sheet.getRange(row.getRow(), 1).setValue(json.id);
+    sheet.getRange(row.getRow(), 2).setValue(json.name);
+    sheet.getRange(row.getRow(), 3).setValue(json.description);
+    sheet.getRange(row.getRow(), 4).setValue(json.age); 
     
   }
 
