@@ -11,9 +11,10 @@ function doGet() {
     for (var i = 1; i < data.length; i++) { // Skip the header row
       var row = data[i];
       var item = {
-        name: row[0],
-        description: row[1],
-        age: row[2]
+        id: row[0],
+        name: row[1],
+        description: row[2],
+        age: row[3]
       };
       jsonData.push(item);
     }
