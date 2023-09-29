@@ -1,23 +1,28 @@
 function doGet(e) {
-  // Handle GET request for item deletion
-  var itemToDelete = e.parameter.itemName;
+  // Handle GET request for item deletion by ID
+  var itemIdToDelete = e.parameter.itemId;
 
-  if (itemToDelete) {
-    // Assuming you have a Google Sheet named "Items" with columns "Name," "Description," "Age," and "Timestamp"
+  if (itemIdToDelete) {
+    // Assuming you have a Google Sheet named "Items" with columns "ID," "Name," "Description," "Age," and "Timestamp"
     var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName("Items");
     var data = sheet.getDataRange().getValues();
 
-    for (var i = data.length - 1; i >= 0; i--) {
-      var itemName = data[i][0]; // Assuming the name is in the first column
-      if (itemName === itemToDelete) {
-        sheet.deleteRow(i + 1); // Delete the row (adding 1 because arrays are 0-indexed)
+    for (var i = 1; i < data.length; i++) {
+      var itemId = data[i][0]; // Assuming the ID is in the first column
+
+      if (itemId == itemIdToDelete) {
+        // Delete the row (no need to add 1 to the index)
+        sheet.deleteRow(i + 1);
+
+        // Respond with a success message
+        return ContentService.createTextOutput("{'message': 'Success'}").setMimeType(ContentService.MimeType.JSON);
       }
     }
 
-    // Respond with a success message
-    return ContentService.createTextOutput("{'message': 'Success'}").setMimeType(ContentService.MimeType.JSON);
+    // If no matching ID is found, you can return an error message or handle it as needed
+    return ContentService.createTextOutput("{'message': 'ID not found'}").setMimeType(ContentService.MimeType.JSON);
   } else {
     // Respond with an error message
-    return ContentService.createTextOutput("{'message': 'Error: Missing item name parameter'}").setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput("{'message': 'Error: Missing item ID parameter'}").setMimeType(ContentService.MimeType.JSON);
   }
 }
