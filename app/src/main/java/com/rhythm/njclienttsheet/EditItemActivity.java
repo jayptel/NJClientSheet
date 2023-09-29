@@ -1,5 +1,6 @@
 package com.rhythm.njclienttsheet;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.rhythm.njclienttsheet.adapters.ItemAdapter;
 import com.rhythm.njclienttsheet.models.Item;
 
@@ -25,12 +25,13 @@ import java.net.URL;
 import java.util.List;
 
 public class EditItemActivity extends AppCompatActivity {
-    private EditText editNameEditText, editDescriptionEditText, editAgeEditText;
+    private EditText editIdEditText, editNameEditText, editDescriptionEditText, editAgeEditText;
     private Button saveButton;
     private Item selectedItem; // This will hold the item data to be edited
     private static final int REQUEST_EDIT_ITEM = 1;
     private List<Item> itemList; // Declare itemList as a class-level variable
     private ItemAdapter itemAdapter; // Declare itemAdapter as a class-level variable
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class EditItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_item);
 
         // Initialize UI elements
+        editIdEditText = findViewById(R.id.editIdEditText);
         editNameEditText = findViewById(R.id.editNameEditText);
         editDescriptionEditText = findViewById(R.id.editDescriptionEditText);
         editAgeEditText = findViewById(R.id.editAgeEditText);
@@ -51,6 +53,7 @@ public class EditItemActivity extends AppCompatActivity {
 
         // Populate the UI with the selected item's data (if available)
         if (selectedItem != null) {
+            editIdEditText.setText(selectedItem.getId());
             editNameEditText.setText(selectedItem.getName());
             editDescriptionEditText.setText(selectedItem.getDescription());
             editAgeEditText.setText(selectedItem.getAge());
@@ -62,14 +65,16 @@ public class EditItemActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Handle the "Save" button click
                 // Get the edited data from the EditText fields
+                String id = editIdEditText.getText().toString();
                 String name = editNameEditText.getText().toString();
                 String description = editDescriptionEditText.getText().toString();
                 String age = editAgeEditText.getText().toString();
 // Create a new Item object with the edited data
-                Item updatedItem = new Item(name, description, age);
+                Item updatedItem = new Item(id, name, description, age);
 
                 // Update the selected item's data (if needed)
                 if (selectedItem != null) {
+                    selectedItem.setId(id);
                     selectedItem.setName(name);
                     selectedItem.setDescription(description);
                     selectedItem.setAge(age);
@@ -110,12 +115,14 @@ public class EditItemActivity extends AppCompatActivity {
 
                 // Convert item to JSON
                 JSONObject json = new JSONObject();
+                json.put("id", item.getId());
                 json.put("name", item.getName());
                 json.put("description", item.getDescription());
                 json.put("age", item.getAge());
 
                 // Send PUT request to Google Apps Script
-                URL url = new URL("https://script.google.com/macros/s/AKfycbxvorVgeVUlFQ9ENZssMNMEfC2jHnhjpF-JoUpPDnVxwR3W_VJ_u6yjBC99igThGQ/exec");
+              //  URL url = new URL("https://script.google.com/macros/s/AKfycbxvorVgeVUlFQ9ENZssMNMEfC2jHnhjpF-JoUpPDnVxwR3W_VJ_u6yjBC99igThGQ/exec");
+                URL url = new URL("https://script.google.com/macros/s/AKfycby98Cb6RHDJFb5SqsQuwnLwJUpHMO-h_jO3Gy7MgYO_gnHCp173PVUkT4IKlt6CeWGu/exec");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
@@ -151,16 +158,22 @@ public class EditItemActivity extends AppCompatActivity {
 
                     // Update the selected item's data (if needed)
                     if (selectedItem != null) {
+                        selectedItem.setId(selectedItem.getId());
                         selectedItem.setName(selectedItem.getName());
                         selectedItem.setDescription(selectedItem.getDescription());
                         selectedItem.setAge(selectedItem.getAge());
                     }
 
+
                     // Pass the updated item back to the previous activity
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("updatedItem", selectedItem);
+                    Log.d("back", "onPostExecute: "+returnIntent);
                     setResult(RESULT_OK, returnIntent);
                     finish();
+
+                    Intent mainActivityIntent = new Intent(EditItemActivity.this, MainActivity.class);
+                    startActivity(mainActivityIntent);
                 } else {
                     // Show error message
                     Toast.makeText(EditItemActivity.this, "Failed to update item!", Toast.LENGTH_SHORT).show();
@@ -199,7 +212,7 @@ public class EditItemActivity extends AppCompatActivity {
     private int findItemPositionById(String itemId) {
         for (int i = 0; i < itemList.size(); i++) {
             Item item = itemList.get(i);
-            if (item.getName().equals(itemId)) {
+            if (item.getId().equals(itemId)) {
                 return i;
             }
         }

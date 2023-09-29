@@ -1,6 +1,9 @@
 package com.rhythm.njclienttsheet;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     //private EditText editTextName, editTextDescription, editTextAge;
    private AddItemFragment addItemFragment;
    private ItemListFragment itemListFragment;
+
     private RequestQueue requestQueue;
     private boolean isAddItemVisible = false; // To track the visibility of the Add Item fragment
     private boolean isViewItemVisible = false;
@@ -102,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Replace the fragment with ItemListFragment when "View" button is clicked
-
-                if (isViewItemVisible) {
+                showViewItemListFragment();
+              /*  if (isViewItemVisible) {
                     // Remove the Add Item fragment
                     removeViewItemListFragment();
                     Log.d("hello wolrd", "checking Add view List  and hide");
@@ -111,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     // Show the Add Item fragment
                     showViewItemListFragment();
                     Log.d("hello wolrd", "checking add view List and visible ");
-                }
+                }*/
                 isViewItemVisible = !isViewItemVisible;
             }
         });
@@ -136,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
                     // Perform deletion in Google Sheets for the selected items
                     for (Item itemToDelete : selectedItems) {
-                        Log.d("MainActivity", "Deleting item: " + itemToDelete.getName());
-                        deleteItemFromSheet(itemToDelete.getName()); // Pass the item's name or identifier
+                        Log.d("MainActivity", "Deleting item: " + itemToDelete.getId());
+                        deleteItemFromSheet(itemToDelete.getId()); // Pass the item's name or identifier
                     }
 
                     // Clear the list of selected items after deletion
@@ -150,15 +156,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteItemFromSheet(String itemName) {
-        // Create a request URL with the item name to delete
-        String url = "https://script.google.com/macros/s/AKfycbzejRLzXfkpJPgs1hF6vAsLqo31CrVz2vq-J-bhDask-0YSNuQ3HGlw-ScE9JRH1yj-Fg/exec?itemName=" + itemName; // Replace with your web app URL
+    // Android code for deleting items by ID
+    private void deleteItemFromSheet(String itemId) {
+        // Create a request URL with the item ID to delete
+        String url = "https://script.google.com/macros/s/AKfycbwvoIYqRlpavtHAIHR4TxDQ_BdlrBdlxFb0X-XxLxxeC7IFiJY9ffgt_q_7tptYwO5qoA/exec?itemId=" + itemId;
 
         // Log the URL before making the request
         Log.d("MainActivity", "Delete request URL: " + url);
 
-
-        // Send a GET request to your Google Apps Script web app to delete the item
+        // Send a GET request to your Google Apps Script web app to delete the item by ID
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -167,14 +173,19 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         // Handle the response, e.g., show a success message
                         Log.d("MainActivity", "Delete response: " + response);
-                        // Handle the response, e.g., show a success message
-                        if ("Success".equals(response)) {
-
-                            // Handle other cases, e.g., show an error message
-                            Toast.makeText(MainActivity.this, "Failed to delete item", Toast.LENGTH_SHORT).show();
-                        } else {
+                        ;
+                        if (response.endsWith("{'message': 'Success'}")) {
                             // Handle success, e.g., show a success message to the user
                             Toast.makeText(MainActivity.this, "Item deleted successfully", Toast.LENGTH_SHORT).show();
+
+                            // Refresh the list after deletion
+                            showViewItemListFragment();
+                        } else if ("ID not found".equals(response)) {
+                            // Handle the case where the ID was not found
+                            Toast.makeText(MainActivity.this, "Item with this ID not found", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle other cases, e.g., show an error message
+                            Toast.makeText(MainActivity.this, "Failed to delete item", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -190,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         // Add the request to the Volley request queue
         requestQueue.add(stringRequest);
     }
+
 
     // TODO: Below  For Add item Fragmment Show and Hide layout mehtod
     private void showAddItemFragment() {
@@ -243,7 +255,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Retrieve data from Google Sheets using an HTTP request
         //String url = "https://script.google.com/macros/s/AKfycbyLiHAb1XdRI1FSOyGTNROOo6oAnenNHc18XRF7IfzOs7TSWMYIE8G4GgRaN8wEkuna/exec?action=getData";
-        String url = "https://script.google.com/macros/s/AKfycbyPx6b7h9XMur9krNwYmqqucKqziMHj0rRS7hXU1HLZZZc8Lj1m4qBIiPHHIu9sjDOBBg/exec";
+        //String url = "https://script.google.com/macros/s/AKfycbyPx6b7h9XMur9krNwYmqqucKqziMHj0rRS7hXU1HLZZZc8Lj1m4qBIiPHHIu9sjDOBBg/exec";
+        String url = "https://script.google.com/macros/s/AKfycbw2ALInglaRu4zAca5wckQFSbt3rnw_dWTznpaozuHk4DA0S3kqzuVuah1no8GCRq99gw/exec";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
@@ -261,14 +274,35 @@ public class MainActivity extends AppCompatActivity {
                             JSONArray jsonArray = response.getJSONArray("data");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject itemObject = jsonArray.getJSONObject(i);
+                                String id = itemObject.getString("id");
                                 String name = itemObject.getString("name");
                                 String description = itemObject.getString("description");
                                 String age = itemObject.getString("age");
 
                                 // Create Item objects and add them to your list
-                                Item item = new Item(name, description, age);
+                                Item item = new Item(id, name, description, age);
                                 itemList.add(item);
                             }
+                            // for in app id base sorting  show  id 1 , 2 , 3 but in google sheet not sort
+                            Collections.sort(itemList, new Comparator<Item>() {
+                                @Override
+                                public int compare(Item item1, Item item2) {
+                                    // Assuming that your item IDs are integers, you can parse them and compare
+                                   // int id1 = Integer.parseInt(item1.getId());
+                                   // int id2 = Integer.parseInt(item2.getId());
+                                   // return Integer.compare(id1, id2);
+
+                                        // Assuming that your item IDs have the "id" prefix
+                                        String id1 = item1.getId().replaceAll("id", "");
+                                        String id2 = item2.getId().replaceAll("id", "");
+
+                                        // Parse the modified IDs as integers
+                                        int intId1 = Integer.parseInt(id1);
+                                        int intId2 = Integer.parseInt(id2);
+
+                                        return Integer.compare(intId1, intId2);
+                                }
+                            });
                             // Log data retrieval
                             Log.d("DataRetrieval", "Data retrieved successfully");
 
@@ -329,7 +363,9 @@ public class MainActivity extends AppCompatActivity {
         // Your implementation for sending data to Google Sheets
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         // Replace with your Google Sheets API endpoint URL
-        String apiUrl = "https://script.google.com/macros/s/AKfycbyLiHAb1XdRI1FSOyGTNROOo6oAnenNHc18XRF7IfzOs7TSWMYIE8G4GgRaN8wEkuna/exec";
+       // String apiUrl = "https://script.google.com/macros/s/AKfycbyLiHAb1XdRI1FSOyGTNROOo6oAnenNHc18XRF7IfzOs7TSWMYIE8G4GgRaN8wEkuna/exec";
+       // String apiUrl = "https://script.google.com/macros/s/AKfycbwYNRSjBlfWtlVWHlkqyMG3i4N2Ocy2mFVaaV2EvXn_sf8JzpeMpcZoLgiCeANlcmxc/exec";
+        String apiUrl = "https://script.google.com/macros/s/AKfycbxqWuHkL4hTbhJQsVrZK9ryjTp2V1wm393EjrLmqFgb_su00JuHEVvBZ8ySwdyXNJyZ/exec";
 
         // Create a Volley request to send data to the API
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -346,11 +382,15 @@ public class MainActivity extends AppCompatActivity {
                                 // Handle success, e.g., show a success message to the user
                                 if (addItemFragment != null) {
                                     Toast.makeText(MainActivity.this, "Text Box clear ", Toast.LENGTH_SHORT).show();
+                                   // addItemFragment.clearEditTextId();
                                     addItemFragment.clearEditTextName();
                                     addItemFragment.clearEditTextDescription();
                                     addItemFragment.clearEditTextAge();
                                     addItemFragment.requestFocusOnNameEditText();
                                 }
+                               // String generatedId = response.getString("id"); // Get the generated ID
+                                //Toast.makeText(MainActivity.this, "Item added successfully with ID: " + generatedId, Toast.LENGTH_SHORT).show();
+
                                 Toast.makeText(MainActivity.this, "Item added successfully", Toast.LENGTH_SHORT).show();
 
                                 // Clear the EditText fields
@@ -418,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
             Item updatedItem = (Item) data.getSerializableExtra("updatedItem");
 
             // Find the position of the updated item in the list
-            int position = findItemPositionById(updatedItem.getName());
+            int position = findItemPositionById(updatedItem.getId());
 
             if (position != -1) {
                 // Replace the old item with the updated item
@@ -438,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
     private int findItemPositionById(String itemId) {
         for (int i = 0; i < itemList.size(); i++) {
             Item item = itemList.get(i);
-            if (item.getName().equals(itemId)) {
+            if (item.getId().equals(itemId)) {
                 return i;
             }
         }

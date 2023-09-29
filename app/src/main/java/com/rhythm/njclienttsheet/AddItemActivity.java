@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 public class AddItemActivity extends Activity {
     private Button buttonSend;
-    private EditText editTextName, editTextDescription, editTextAge;
+    private EditText editTextId, editTextName, editTextDescription, editTextAge;
     //private boolean isAddItemVisible = false; // To track the visibility of the Add Item fragment
 
     @SuppressLint("MissingInflatedId")
@@ -33,6 +33,7 @@ public class AddItemActivity extends Activity {
         setContentView(R.layout.add_item);
 
         // Initialize UI elements
+        editTextId = findViewById(R.id.editTextId);
         editTextName = findViewById(R.id.editTextName);
         editTextDescription = findViewById(R.id.editTextDescription);
         editTextAge = findViewById(R.id.editTextAge);
@@ -45,6 +46,7 @@ public class AddItemActivity extends Activity {
 
                 Log.d("hello world", "JSON Data: add Button Click Log ");
                 // Get data from EditText fields
+                String id = editTextId.getText().toString();
                 String name = editTextName.getText().toString();
                 String description = editTextDescription.getText().toString();
                 String age = editTextAge.getText().toString();
@@ -52,6 +54,7 @@ public class AddItemActivity extends Activity {
                 JSONObject postData = new JSONObject();
                 try {
                     postData.put("action", "addItem");
+                    postData.put("id", id);
                     postData.put("name", name);
                     postData.put("description", description);
                     postData.put("age", age);
@@ -90,6 +93,7 @@ public class AddItemActivity extends Activity {
                                 // Handle success, e.g., show a success message to the user
                                 Toast.makeText(AddItemActivity.this, "Item added successfully", Toast.LENGTH_SHORT).show();
                                 // Clear the EditText fields
+                                editTextId.setText("");
                                 editTextName.setText("");
                                 editTextDescription.setText("");
                                 editTextAge.setText("");

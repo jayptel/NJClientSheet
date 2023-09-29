@@ -7,10 +7,30 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/editIdLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Id:"
+        android:textSize="18sp"
+        android:textColor="#B06ED8"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/editIdEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editIdLabel"
+        android:layout_marginTop="5dp"
+        android:hint="Enter Id"
+        android:textSize="18sp"
+        android:enabled="false"/>
+
+    <TextView
         android:id="@+id/editNameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit Name:"
+        android:layout_below="@id/editIdEditText"
         android:textSize="18sp"
         android:textColor="#B06ED8"
         android:textStyle="bold"/>

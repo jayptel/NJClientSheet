@@ -1,7 +1,7 @@
 package com.rhythm.njclienttsheet.models;
 import java.io.Serializable;
 public class Item implements Serializable{
-
+        private String id; // Unique ID
         private String name;
         private String description;
         private String age;
@@ -9,6 +9,9 @@ public class Item implements Serializable{
         private int nameColorRes;
         private int descriptionColorRes;
         private int ageColorRes;
+        public String getId() {
+                return id;
+        } // Unique ID
         public String getName() {
                 return name;
         }
@@ -31,12 +34,15 @@ public class Item implements Serializable{
         public int getAgeColorRes() {
                 return ageColorRes;
         }
-        public Item(String name, String description, String age) {
+        public Item(String id ,String name, String description, String age) {
+                this.id = id;
                 this.name = name;
                 this.description = description;
                 this.age = age;
         }
 
+        public void setId(String editedId) {
+        }
         public void setName(String editedName) {
         }
 

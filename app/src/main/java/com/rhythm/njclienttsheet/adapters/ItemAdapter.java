@@ -51,6 +51,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
         Item item = itemList.get(position);
 
         // Set data to your ViewHolder's views
+        holder.idTextView.setText(item.getId());
         holder.nameTextView.setText(item.getName());
         holder.descriptionTextView.setText(item.getDescription());
         holder.ageTextView.setText(item.getAge());
@@ -62,7 +63,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             public void onClick(View v) {
                 item.setSelected(holder.checkBox.isChecked()); // Update the selected state
 
-                Log.d("ItemAdapter", "Checkbox clicked for item: " + item.getName() + ", isChecked: " + holder.checkBox.isChecked());
+                Log.d("ItemAdapter", "Checkbox clicked for item: " + item.getId() + ", isChecked: " + holder.checkBox.isChecked());
             }
         });
         // Set an OnClickListener for the "Edit" button
@@ -108,6 +109,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
     // ViewHolder class to hold your item's views
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView idTextView;
         public TextView nameTextView;
         public TextView descriptionTextView;
         public TextView ageTextView;
@@ -116,6 +118,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            idTextView = itemView.findViewById(R.id.idTextView);
             nameTextView = itemView.findViewById(R.id.nameTextView); // Replace with your actual view IDs
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             ageTextView = itemView.findViewById(R.id.ageTextView);

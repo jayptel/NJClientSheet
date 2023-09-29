@@ -4,7 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddItemActivity">
+    tools:context=".AddItemActivity"
+    android:paddingTop="10dp">
+
+    <EditText
+        android:id="@+id/editTextId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Id"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:enabled="false"/>
 
     <EditText
         android:id="@+id/editTextName"
@@ -13,8 +25,9 @@
         android:hint="Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextId"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="16dp"/>
 
     <EditText
         android:id="@+id/editTextDescription"
