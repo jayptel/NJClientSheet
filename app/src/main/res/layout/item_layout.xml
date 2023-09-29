@@ -26,7 +26,7 @@
         android:layout_toStartOf="@id/buttonEdit"
         android:layout_toEndOf="@id/idTextlable"
         android:text="John Doe with a very long name that will wrap to the next line"
-        android:textColor="#d1d1d1"
+
         android:textSize="18sp"/>
     <TextView
         android:id="@+id/nameTextlable"
@@ -50,7 +50,7 @@
         android:layout_toStartOf="@id/buttonEdit"
         android:layout_toEndOf="@id/nameTextlable"
         android:text="John Doe with a very long name that will wrap to the next line"
-        android:textColor="#d1d1d1"
+
         android:textSize="18sp"/>
 
     <Button
@@ -84,7 +84,7 @@
         android:layout_toLeftOf="@id/buttonEdit"
         android:layout_toRightOf="@id/descriptionTextlable"
         android:text="Description: John Doe with a very long name that will wrap to the next line"
-        android:textColor="#d1d1d1"
+
         android:textSize="14sp" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -118,7 +118,7 @@
         android:layout_toEndOf="@id/ageTextlable"
         android:text="Age: John Doe with a very long name that will wrap to the next line"
         android:textSize="16sp"
-        android:textColor="#d1d1d1"/>
+       />
 
     <View
         android:layout_width="match_parent"
