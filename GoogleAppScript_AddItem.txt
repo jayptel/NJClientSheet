@@ -1,4 +1,4 @@
-var sheetId = '1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4'; // Replace with your actual spreadsheet ID
+var sheetId = 'replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID'; // Replace with your actual spreadsheet ID
 var sheetName = 'Items'; // Replace with your sheet name
 
 function getNextId() {
