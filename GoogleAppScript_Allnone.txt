@@ -1,0 +1,154 @@
+AddItem
+
+var sheetId = 'Replace with your actual spreadsheet ID'; // Replace with your actual spreadsheet ID
+var sheetName = 'Items'; // Replace with your sheet name
+
+function getNextId() {
+  var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
+  var data = sheet.getDataRange().getValues();
+  
+  if (data.length == 0) {
+    return 'id1'; // Start with 'id1' if there are no existing items
+  }
+  
+  var lastId = data[data.length - 1][0]; // Assuming ID is in the first column
+  
+  if (typeof lastId === 'string' && lastId.startsWith('id')) {
+    var numericPart = parseInt(lastId.replace('id', ''), 10); // Extract the numeric part
+    if (!isNaN(numericPart)) {
+      var nextId = 'id' + (numericPart + 1); // Increment the numeric part and construct the next ID
+      return nextId;
+    }
+  }
+  
+  return 'id1'; // Default to 'id1' if the last ID cannot be parsed
+}
+
+function doPost(e) {
+  var result = { message: 'hello' };
+
+  try {
+    var jsonString = e.postData.contents;
+    var data = JSON.parse(jsonString);
+
+    if (data.action === 'addItem') {
+      var nextId = getNextId();
+      var values = [nextId, data.name, data.description, data.age];
+      
+      var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName);
+      
+      // Append the values to the sheet
+      sheet.appendRow(values);
+
+      result.message = 'Success';
+    } else {
+      result.message = 'Invalid action';
+    }
+  } catch (error) {
+    result.message = 'Error: ' + error.toString();
+  }
+
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+
+
+
+
+EditItem
+
+function doPost(e) {
+
+  // Parse request body
+  var json = JSON.parse(e.postData.contents);
+  
+  // Get sheet
+  var sheet = SpreadsheetApp.openById("Replace with your actual spreadsheet ID").getSheetByName("Items");
+
+  // Find row to update
+  var row = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1)
+                .createTextFinder(json.id)
+                .findNext();
+// Log the result of findNext() (for debugging)
+  Logger.log("Row found: " + row);
+
+  // Update row 
+  if (row) {
+    sheet.getRange(row.getRow(), 1).setValue(json.id);
+    sheet.getRange(row.getRow(), 2).setValue(json.name);
+    sheet.getRange(row.getRow(), 3).setValue(json.description);
+    sheet.getRange(row.getRow(), 4).setValue(json.age); 
+    
+  }
+
+  // Return response
+  return ContentService.createTextOutput("Success"); 
+
+}
+
+
+
+
+
+
+ViewItem
+
+
+function doGet() {
+  try {
+    // Get the Google Sheet by its ID (replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID)
+    var sheet = SpreadsheetApp.openById('Replace with your actual spreadsheet ID').getSheetByName('Items');
+    
+    // Get all data from the sheet
+    var data = sheet.getDataRange().getValues();
+    var jsonData = [];
+    
+    // Convert the data to JSON formata
+    for (var i = 1; i < data.length; i++) { // Skip the header row
+      var row = data[i];
+      var item = {
+        id: row[0],
+        name: row[1],
+        description: row[2],
+        age: row[3]
+      };
+      jsonData.push(item);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ data: jsonData })).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+
+
+DeleteItem
+
+function doGet(e) {
+  // Handle GET request for item deletion by ID
+  var itemIdToDelete = e.parameter.itemId;
+
+  if (itemIdToDelete) {
+    // Assuming you have a Google Sheet named "Items" with columns "ID," "Name," "Description," "Age," and "Timestamp"
+    var sheet = SpreadsheetApp.openById('Replace with your actual spreadsheet ID').getSheetByName("Items");
+    var data = sheet.getDataRange().getValues();
+
+    for (var i = 1; i < data.length; i++) {
+      var itemId = data[i][0]; // Assuming the ID is in the first column
+
+      if (itemId == itemIdToDelete) {
+        // Delete the row (no need to add 1 to the index)
+        sheet.deleteRow(i + 1);
+
+        // Respond with a success message
+        return ContentService.createTextOutput("{'message': 'Success'}").setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
+    // If no matching ID is found, you can return an error message or handle it as needed
+    return ContentService.createTextOutput("{'message': 'ID not found'}").setMimeType(ContentService.MimeType.JSON);
+  } else {
+    // Respond with an error message
+    return ContentService.createTextOutput("{'message': 'Error: Missing item ID parameter'}").setMimeType(ContentService.MimeType.JSON);
+  }
+}
