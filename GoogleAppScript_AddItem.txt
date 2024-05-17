@@ -7,7 +7,7 @@ function doPost(e) {
 
     if (data.action === 'addItem') {
       // Get the Google Sheet by its ID (replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID)
-      var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName('Items');
+      var sheet = SpreadsheetApp.openById('replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID').getSheetByName('Items');
 
       // Append the data to the sheet
       sheet.appendRow([data.name, data.description, data.age]);
