@@ -4,7 +4,7 @@ function doGet(e) {
 
   if (itemIdToDelete) {
     // Assuming you have a Google Sheet named "Items" with columns "ID," "Name," "Description," "Age," and "Timestamp"
-    var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName("Items");
+    var sheet = SpreadsheetApp.openById('replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID').getSheetByName("Items");
     var data = sheet.getDataRange().getValues();
 
     for (var i = 1; i < data.length; i++) {
