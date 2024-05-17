@@ -4,7 +4,7 @@ function doPost(e) {
   var json = JSON.parse(e.postData.contents);
   
   // Get sheet
-  var sheet = SpreadsheetApp.openById("1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4").getSheetByName("Items");
+  var sheet = SpreadsheetApp.openById("replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID").getSheetByName("Items");
 
   // Find row to update
   var row = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1)
