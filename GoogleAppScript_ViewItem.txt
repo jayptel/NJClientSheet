@@ -1,7 +1,7 @@
 function doGet() {
   try {
     // Get the Google Sheet by its ID (replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID)
-    var sheet = SpreadsheetApp.openById('1BCRtVj4B7i-ohT5A553U90NPFNYozpZ7MIVV68qUqE4').getSheetByName('Items');
+    var sheet = SpreadsheetApp.openById('replace 'YOUR_SPREADSHEET_ID' with your actual spreadsheet ID').getSheetByName('Items');
     
     // Get all data from the sheet
     var data = sheet.getDataRange().getValues();
